@@ -70,7 +70,8 @@ const userSchema = new mongoose.Schema({
     }],
     discussion : [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Discussion'
+        ref: 'Discussion',
+        unique: true
     }]
 
 
@@ -114,7 +115,7 @@ const discussionSchema = new mongoose.Schema({
     reply:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
-        unique: true
+        
     }]
 })
 
