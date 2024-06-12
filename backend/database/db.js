@@ -67,6 +67,10 @@ const userSchema = new mongoose.Schema({
     },
     skills:[{
         type:String
+    }],
+    discussion : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Discussion'
     }]
 
 
@@ -100,8 +104,18 @@ const postSchema = new mongoose.Schema({
         type:String,
         trim: true
     }],
-    
+})
 
+const discussionSchema = new mongoose.Schema({
+    title:{
+        type: String,
+        required:true
+    },
+    reply:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+        unique: true
+    }]
 })
 
 const commentSchema = new mongoose.Schema({
@@ -123,9 +137,11 @@ const commentSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 const Post = mongoose.model("Post", postSchema);
 const Comment = mongoose.model("Comment", commentSchema);
+const Discussion = mongoose.model("Discussion", discussionSchema);
 
 module.exports = {
     User,
     Post,
-    Comment
+    Comment,
+    Discussion
 }

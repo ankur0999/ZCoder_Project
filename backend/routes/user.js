@@ -1,6 +1,6 @@
 //"use strict";
 const zod = require("zod");
-const { User } = require("../database/db");
+const { User, Comment, Discussion } = require("../database/db");
 const express = require('express');
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../authMiddleware/config");
@@ -171,5 +171,140 @@ router.get("/getuser/:userId", async (req, res)=>{
         res.json(e);
     }
 })
+
+// crating dicussion in users
+const discussionBody = zod.object({
+    title: zod.string()
+});
+
+router.post("/discussion", middleware.userAuthentication, async(req, res)=>{
+    const { success } = discussionBody.safeParse(req.body);
+    if(!success){
+        return res.status(411).json({
+            message: "incorrect input"
+        })
+    }
+    try{
+         
+         const discussion = await Discussion.create({
+            title: req.body.title
+         })
+         await User.updateOne({
+            _id: req.userId
+         },{
+            "$push":{
+                discussion: discussion._id
+            }
+         })
+
+    }catch(e){
+        console.log(e);
+    }
+    res.json({
+        msg: "discussion created successfully"
+    })
+})
+
+// pushing discussion in different user
+router.put("/discussion/:userId/:discussionId", async(req, res)=>{
+    const discussionId = req.params.discussionId
+    const userId = req.params.userId
+    try{
+    await User.updateOne({
+        _id: userId
+    },{
+        "$push":{
+            discussion: discussionId
+        }
+    })
+    }catch(e){
+        console.log(e)
+    }
+    res.json({
+        msg: " discussion sended successfully"
+    })
+})
+
+// route to get all users current  discussion
+
+router.get("/discussions", middleware.userAuthentication, async(req,res)=>{
+    try{
+    const user = await User.findById({
+        _id: req.userId
+    })
+
+    const discussion = await Discussion.find({
+        _id: {
+            "$in": user.discussion
+        }
+    })
+    res.json({
+        discussions: discussion
+    })
+}catch(e){
+    console.log(e);
+}
+
+})
+
+// route for get all comment in discussion box
+router.get("/comment/:discussionId", async(req,res)=>{
+    const discussionId = req.params.discussionId;
+    try{
+    const discussion = await Discussion.findById({
+        _id: discussionId
+    })
+    const comment = await Comment.find({
+        _id: {
+            "$in" : discussion.reply
+        }
+    })
+    res.json({
+        comment: comment
+    })
+    }catch(e){
+        console.log(e);
+    }
+    
+} )
+
+// route for commenting in discussion box
+const commentBody = zod.object({
+    description: zod.string()
+});
+router.post("/comment/:discussionId", middleware.userAuthentication, async(req,res)=>{
+    const {success} = commentBody.safeParse(req.body)
+    if(!success){
+        return res.status(411).json({
+            msg: "unable to parse"
+        })
+    }
+    
+    try{
+    const user = await User.findById({
+        _id: req.userId
+    })
+    const comment = await Comment.create({
+        description: req.body.description,
+        firstName: user.firstName
+    })
+    const discussionId = req.params.discussionId;
+    await Discussion.updateOne({
+        _id: discussionId
+    },{
+        "$push":{
+           reply :comment._id
+        }
+
+    })
+    }catch(e){
+        console.log(e);
+    }
+    res.json({
+        msg:"Comment uploaded successfuly"
+    })
+
+}) 
+
 
 module.exports = router;

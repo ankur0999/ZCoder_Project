@@ -8,6 +8,9 @@ import { ContestCalender } from "./pages/ContestCalender";
 import { Profile } from "./pages/Profile";
 import { EditProfile } from "./pages/EditProfile";
 import { UsersQuestion } from "./pages/UsersQuestion";
+import { DiscussionPage } from "./pages/DiscussionPage";
+import { DiscussionBox } from "./pages/DiscussionBox";
+import { Users } from "./pages/Users";
 function App() {
   
 
@@ -24,7 +27,9 @@ function App() {
         <Route path = "/profilepage" element = {<Profile />} />
         <Route path = "/editprofile" element = {<EditProfile />} />
         <Route path = "/usersquestion" element={<UsersQuestion />} />
-
+        <Route path = "/discussion" element={<DiscussionPage/>} />
+        <Route path = "/discussionbox" element={<DiscussionBox/>}/>
+        <Route path = "/searchusers" element={<Users />} />
       </Routes>
       
       </BrowserRouter>
