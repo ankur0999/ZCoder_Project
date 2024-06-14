@@ -17,7 +17,7 @@ export const Feed = ({feed}) =>{
     
     return <div className="m-8 ">
         <div className="h-20 shadow-lg p-2 m-4 text-white bg-blue-900 rounded-lg">
-            <div className="font-semibold h-10 cursor-pointer text-white">
+            <div className="font-semibold h-10  text-white">
                 <button onClick={(e)=>{
                     navigate("/post?id="+feed._id + "&name="+ user)
                 }} >

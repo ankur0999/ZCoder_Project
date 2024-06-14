@@ -69,6 +69,10 @@ export const Profile = () =>{
             </svg></div>
             <div className="m-1">{profile.location}</div>
             </div>
+            <div>
+                <div className="text-2xl font-serif mb-1">About Me</div>
+                <div >{profile.summary}</div>
+            </div>
             <Website url={profile.website} />
             <Github url={profile.github} />
             <Linkedin url={profile.linkedin} />
@@ -77,6 +81,8 @@ export const Profile = () =>{
             <div className="ml-4">{profile.education}</div>
             <div className="ml-2 mt-2 text-xl font-semibold font-serif">Skills</div>
             <div>{profile.skills?.map(skill => <Skill skill={skill} />)}</div>
+            
+            
             
             </div>
             <div className="m-8 w-[42rem]">

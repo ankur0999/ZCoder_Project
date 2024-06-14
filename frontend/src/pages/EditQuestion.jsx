@@ -14,10 +14,27 @@ export const EditQuestion = () => {
     const [post, setPost] = useState([]);
     const [searchParams] = useSearchParams();
     const postId = searchParams.get("postId");
-    const [title, setTitle] = useState(post.title);
-    const [description, setDescription] = useState(post.description);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [Tags, setTags] = useState([]);
+    const [tag, setTag] = useState("");
     
-    
+    const data = {
+        title: title,
+        description: description,
+        Tags: Tags
+    }
+
+    const filteredData = Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => value !== null && value !== '' && value !== undefined)
+      );
+
+    function addTags(){
+        
+        setTags([...Tags, tag])
+        
+    }
+
     useEffect(() =>{
         async function fetchMyApi(){
         await axios.get("http://localhost:3000/api/v1/post/getpost/"+postId)
@@ -46,14 +63,15 @@ export const EditQuestion = () => {
         <Textarea  onChange={e=>{
             setDescription(e.target.value);
         }}  className="w-[40rem]" size="md" label="Description" rows={8} defaultValue={post.description} />
-       
+        <div>
+        <input onChange={e=>{
+            setTag(e.target.value)
+        }} className="p-2" placeholder="tag"></input>
+        <button onClick={addTags} className="p-2 bg-blue-900 rounded-lg text-white">add Tag</button>
+        </div>
         <div className="w-32" ><Button onClick={async()=>{
             
-            await axios.put("http://localhost:3000/api/v1/post/update/"+postId,{
-                title,
-                description,
-                Tags
-            },{
+            await axios.put("http://localhost:3000/api/v1/post/update/"+postId,filteredData,{
                 headers:{
                     Authorization: "Bearer "+ localStorage.getItem("token")
                 }

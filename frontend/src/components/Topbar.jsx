@@ -26,15 +26,20 @@ export const Topbar = () => {
         </div>
         
         <div className="flex ">
+            <div><button onClick={(e)=>{
+                e.persist();
+                localStorage.removeItem('token');
+                navigate('/signin');
+            }} className="mr-4 mt-4 text-xl font-serif text-red-700">Logout</button></div>
             <div className="text-rose-950 flex flex-col justify-center h-full mr-4">
                 {user}
             </div>
-            <div className="rounded-full h-12 w-12 bg-rose-100 flex justify-center  mt-1 mr-2 hover:bg-blue-900">
-                <div className="flex flex-col justify-center h-full text-xl">
-                    <button onClick={(e)=>{
+            <div onClick={(e)=>{
                         e.persist();
                         navigate("/profilepage?id="+userId+"&name="+user)
-                    }}>{user[0]}</button>
+                    }}  className="rounded-full h-12 w-12 bg-rose-100 flex justify-center cursor-pointer mt-1 mr-2 hover:bg-blue-900">
+                <div className="flex flex-col justify-center h-full text-xl ">
+                    {user[0]}
                 </div>
             </div>
         </div>

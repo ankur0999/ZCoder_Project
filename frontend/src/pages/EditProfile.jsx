@@ -11,11 +11,14 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState,useMemo } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 export const EditProfile = () =>{
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get("id");
+    const name = searchParams.get("name");
     const [user, Setuser] = useState([]);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -27,10 +30,30 @@ export const EditProfile = () =>{
     const [summary, setSummary] = useState("");
     const [twitter, setTwitter] = useState("");
     const [website, setWebsite] = useState("");
+    const [gender, setGender] = useState("");
     const [skill, setSkill] = useState("");
-    const [skills, setSkills] = useState([""]);
+    const [skills, setSkills] = useState([]);
     const topbar = useMemo(()=><Topbar/>,[]);
     const index = useMemo(()=><Index/>,[]);
+    
+    const data = {
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+      education: education,
+      github: github,
+      linkedin: linkedin,
+      location: location,
+      summary: summary,
+      twitter: twitter,
+      website: website,
+      gender: gender,
+      skills: skills,
+      
+    }
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => value !== null && value !== '' && value !== undefined )
+    );
 
     function addSkill(){
         setSkills([...skills, skill])
@@ -104,7 +127,7 @@ export const EditProfile = () =>{
             }}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
-              Password
+            Password
           </Typography>
           <Input
             onChange={e=>{
@@ -117,6 +140,21 @@ export const EditProfile = () =>{
               className: "before:content-none after:content-none",
             }}
           />
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Gender
+          </Typography>
+          <Input
+            onChange={e=>{
+               setGender(e.target.value);
+            }}
+            size="lg"
+            placeholder="name@mail.com"
+            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
+          />
+          
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Education
           </Typography>
@@ -188,6 +226,20 @@ export const EditProfile = () =>{
             }}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
+            Your Location
+          </Typography>
+          <Input
+            onChange={e=>{
+               setLocation(e.target.value);
+            }}
+            size="lg"
+            placeholder="name@mail.com"
+            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+            labelProps={{
+              className: "before:content-none after:content-none",
+            }}
+          />
+          <Typography variant="h6" color="blue-gray" className="-mb-3">
             Write About Yourselves
           </Typography>
           <Input
@@ -240,26 +292,18 @@ export const EditProfile = () =>{
           }
           containerProps={{ className: "-ml-2.5" }}
         />
+
         <Button onClick={async()=>{
-            await axios.put("http://localhost:3000/api/v1/user/update",{
-                firstName,
-                lastName,
-                password,
-                education,
-                github,
-                linkedin,
-                location,
-                summary,
-                twitter,
-                website,
-                skills
-            },{
+            await axios.put("http://localhost:3000/api/v1/user/update",filteredData,{
                 headers:{
                     Authorization: "Bearer "+ localStorage.getItem("token")
                 }
             })
-            alert("Update successfull")
-        }}
+            alert("Update successfull");
+            navigate("/profilepage?id="+id+"&name="+name);   
+        }
+         
+      }
         className="mt-6" color="blue" fullWidth>
           Update
         </Button>

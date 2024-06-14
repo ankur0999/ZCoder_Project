@@ -10,10 +10,20 @@ import axios from "axios"
 export const AskQuestion = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [Tags, setTags] = useState([""]);
+    const [Tags, setTags] = useState([]);
     const [tag, setTag] = useState("");
     const topbar = useMemo(()=><Topbar/>,[]);
     const index = useMemo(()=><Index/>,[]);
+    
+    const data = {
+        title: title,
+        description: description,
+        Tags: Tags
+    }
+
+    const filteredData = Object.fromEntries(
+        Object.entries(data).filter(([key, value]) => value !== null && value !== '' && value !== undefined)
+      );
 
     function addTags(){
         
@@ -45,11 +55,7 @@ export const AskQuestion = () => {
         </div>
         <div className="w-32" ><Button onClick={()=>{
             
-            axios.post("http://localhost:3000/api/v1/post/post",{
-                title,
-                description,
-                Tags
-            },{
+            axios.post("http://localhost:3000/api/v1/post/post",filteredData,{
                 headers:{
                     Authorization: "Bearer "+ localStorage.getItem("token")
                 }

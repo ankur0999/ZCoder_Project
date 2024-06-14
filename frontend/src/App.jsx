@@ -12,6 +12,7 @@ import { DiscussionPage } from "./pages/DiscussionPage";
 import { DiscussionBox } from "./pages/DiscussionBox";
 import { Users } from "./pages/Users";
 import { EditQuestion } from "./pages/EditQuestion";
+
 function App() {
   
 
@@ -32,6 +33,7 @@ function App() {
         <Route path = "/discussionbox" element={<DiscussionBox/>}/>
         <Route path = "/searchusers" element={<Users />} />
         <Route path = "/editquestion" element={<EditQuestion/>}/>
+        <Route path = "/" element = {<Signin />} />
       </Routes>
       
       </BrowserRouter>
