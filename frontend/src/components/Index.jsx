@@ -12,7 +12,7 @@ import { Teams } from "./Teams";
 
 
 export const Index = () =>{
-    return <div className="shadow h-auto mt-8 bg-slate-100 flex flex-col">
+    return <div className="shadow h-auto mt-8 bg-slate-200 flex flex-col">
     <div className="pl-8 pt-7 cursor-pointer "><Home /></div>
     <div className="pl-8 pt-2 cursor-pointer"><Questions/> </div>
     <div className="pl-8 pt-2 cursor-pointer"><Tags /></div>

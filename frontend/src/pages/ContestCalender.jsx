@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Topbar } from "../components/Topbar"
 
 import { Index } from "../components/Index";
@@ -6,7 +6,8 @@ import { Index } from "../components/Index";
 export const ContestCalender = () =>{
     const [contest, setContest] = useState([]);
     let API = "https://codeforces.com/api/contest.list";
-
+    const topbar = useMemo(()=><Topbar/>,[]);
+    const index = useMemo(()=><Index/>,[]);
     const fetchApiData = async (url) =>{
         try{
             const res = await fetch(url)
@@ -24,11 +25,11 @@ export const ContestCalender = () =>{
      fetchApiData(API);
     },[contest])
     return <div className="bg-slate-50 ">
-        <Topbar />
+       {topbar}
         
         <div className=" h-auto flex ">
             <div className="min-w-52 max-w-52">
-            <Index />
+            {index}
             </div>
             <div className="flex justify-between">
             <div>

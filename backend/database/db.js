@@ -85,7 +85,7 @@ const postSchema = new mongoose.Schema({
     },
     description:{
         type: String,
-        required: true,
+        
     },
     userId:{
         type: mongoose.Schema.Types.ObjectId,
@@ -116,6 +116,10 @@ const discussionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
         
+    }],
+    users:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }]
 })
 
@@ -129,6 +133,10 @@ const commentSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }
 })
 

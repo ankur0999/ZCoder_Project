@@ -187,7 +187,15 @@ router.post("/discussion", middleware.userAuthentication, async(req, res)=>{
     try{
          
          const discussion = await Discussion.create({
-            title: req.body.title
+            title: req.body.title,
+         })
+         await Discussion.updateOne({
+            _id: discussion._id
+         },{
+            "$push":
+            {
+                users: req.userId
+            }
          })
          await User.updateOne({
             _id: req.userId
@@ -217,12 +225,42 @@ router.put("/discussion/:userId/:discussionId", async(req, res)=>{
             discussion: discussionId
         }
     })
+    await Discussion.updateOne({
+        _id: discussionId
+    },{
+        "$push":{
+            users: userId
+        }
+    })
     }catch(e){
         console.log(e)
     }
     res.json({
         msg: " discussion sended successfully"
     })
+})
+
+// route to get all users of current discussion
+router.get("/getusers/discussion/:discussionId", async(req,res)=>{
+    const discussionId = req.params.discussionId;
+    try{
+        const discussion = await Discussion.findById({
+            _id: discussionId
+        })
+        const users = await User.find({
+            _id:{
+                "$in": discussion.users
+            }
+        })
+        
+            res.json({
+                user: users
+            })
+        
+        
+    }catch(e){
+        console.log(e);
+    }
 })
 
 // route to get all users current  discussion
@@ -286,7 +324,8 @@ router.post("/comment/:discussionId", middleware.userAuthentication, async(req,r
     })
     const comment = await Comment.create({
         description: req.body.description,
-        firstName: user.firstName
+        firstName: user.firstName,
+        userId: req.userId
     })
     const discussionId = req.params.discussionId;
     await Discussion.updateOne({
@@ -305,6 +344,48 @@ router.post("/comment/:discussionId", middleware.userAuthentication, async(req,r
     })
 
 }) 
+
+// route for deleting descussion
+
+router.put("/delete/discussion/:discussionId", middleware.userAuthentication, async(req, res)=>{
+    const discussionId = req.params.discussionId;
+    try{
+    
+    await User.updateOne({
+        _id: req.userId
+    },{
+        "$pull":{
+            discussion: discussionId
+        }
+    })
+    const discussion = await Discussion.findById({
+        _id: discussionId
+    })
+    await Discussion.updateOne({
+        _id: discussionId
+    },{
+        "$pull":{
+            users: req.userId
+        }
+    })
+    
+    if(discussion.users.length == 1){
+        await Discussion.deleteOne({
+            _id: discussionId
+        })
+    }
+    else{
+        res.json("unable to delete")
+    }
+    
+
+}catch(e){
+        console.log(e);
+    }
+    res.json({
+        msg: "pulled successfully"
+    })
+})
 
 
 module.exports = router;

@@ -16,8 +16,8 @@ export const Feed = ({feed}) =>{
     })
     
     return <div className="m-8 ">
-        <div className="h-20 shadow-lg p-2 m-4 bg-violet-100">
-            <div className="font-semibold h-10 cursor-pointer">
+        <div className="h-20 shadow-lg p-2 m-4 text-white bg-blue-900 rounded-lg">
+            <div className="font-semibold h-10 cursor-pointer text-white">
                 <button onClick={(e)=>{
                     navigate("/post?id="+feed._id + "&name="+ user)
                 }} >
@@ -44,7 +44,7 @@ export const Feed = ({feed}) =>{
 }
 
 function Tag({title}){
-    return <div className="pr-1 pl-1 mr-2 cursor-pointer shadow-lg  ">
+    return <div className="pr-1 pl-1 mr-2 cursor-pointer shadow-lg bg-blue-400 rounded-lg">
         {title}
     </div>
 }

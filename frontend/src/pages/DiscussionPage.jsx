@@ -2,7 +2,7 @@ import { Topbar } from "../components/Topbar";
 import { Index } from "../components/Index";
 import { InputBox } from "../components/InputBox";
 import { Button } from "../components/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,9 @@ export const DiscussionPage = () => {
     
     const [title, setTitle] = useState("");
     const [discussions, setDiscussions] = useState([]);
+    const [state, setState] = useState(false);
+    const topbar = useMemo(()=><Topbar/>,[]);
+    const index = useMemo(()=><Index/>,[]);
     useEffect(()=>{
         async function fetchMyApi(){
         await axios.get("http://localhost:3000/api/v1/user/discussions",{
@@ -21,14 +24,14 @@ export const DiscussionPage = () => {
               setDiscussions(response.data.discussions)
         })}
         fetchMyApi()
-    },[])
-    console.log(discussions);
-    return <div >
-    <Topbar />
+    },[state])
+    
+    return <div className="bg-slate-50">
+    {topbar}
     
     <div className=" h-auto flex ">
         <div className="min-w-52 max-w-52">
-        <Index />
+        {index}
         </div>
         
         <div className="m-8 w-[18rem]">
@@ -46,6 +49,7 @@ export const DiscussionPage = () => {
                     Authorization: "Bearer "+ localStorage.getItem("token")
                 }
             });
+            setState((prev)=>!prev);
             
           }} label={"Create Discussion"} /></div>
            </div>

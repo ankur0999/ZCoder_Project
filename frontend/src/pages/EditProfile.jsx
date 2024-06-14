@@ -9,7 +9,7 @@ import {
     Typography,
   } from "@material-tailwind/react";
 import { useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useMemo } from "react";
 import axios from "axios";
 
 
@@ -29,6 +29,8 @@ export const EditProfile = () =>{
     const [website, setWebsite] = useState("");
     const [skill, setSkill] = useState("");
     const [skills, setSkills] = useState([""]);
+    const topbar = useMemo(()=><Topbar/>,[]);
+    const index = useMemo(()=><Index/>,[]);
 
     function addSkill(){
         setSkills([...skills, skill])
@@ -41,11 +43,12 @@ export const EditProfile = () =>{
         })
     },[])
     return<div className="bg-slate-50">
-        <Topbar />
+        {topbar}
+
         
         <div className=" h-auto flex ">
             <div className="min-w-52 max-w-52">
-            <Index />
+            {index}
             </div>
             <div className="m-8 pl-10 flex">
             <div className="flex w-[17rem] h-[10rem] p-2 bg-slate-100 shadow-lg">

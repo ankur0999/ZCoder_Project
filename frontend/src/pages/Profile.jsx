@@ -2,7 +2,7 @@ import { Topbar } from "../components/Topbar";
 import { Index } from "../components/Index";
 import img from "../images/userlogo.jpg";
 import { GetQuestion } from "../components/GetQuestion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,8 @@ export const Profile = () =>{
     const jwt = localStorage.getItem("token");
     const decoded = jwtDecode(jwt);
     const userId = decoded.userId;
-    
+    const topbar = useMemo(()=><Topbar/>,[]);
+    const index = useMemo(()=><Index/>,[]);
     const [profile, setProfile] = useState([])
     
      
@@ -34,11 +35,11 @@ export const Profile = () =>{
     },[])
     
     return <div className="bg-slate-50">
-    <Topbar />
+    {topbar}
         
     <div className=" h-auto flex ">
         <div className="min-w-52 max-w-52">
-        <Index />
+        {index}
         </div>
         <div className="flex m-8 "> 
             <div>

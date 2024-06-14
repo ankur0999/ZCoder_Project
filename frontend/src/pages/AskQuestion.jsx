@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Textarea } from "@material-tailwind/react";
 import { Topbar } from "../components/Topbar";
 import { Index } from "../components/Index";
@@ -12,34 +12,36 @@ export const AskQuestion = () => {
     const [description, setDescription] = useState("");
     const [Tags, setTags] = useState([""]);
     const [tag, setTag] = useState("");
-    
+    const topbar = useMemo(()=><Topbar/>,[]);
+    const index = useMemo(()=><Index/>,[]);
+
     function addTags(){
         
         setTags([...Tags, tag])
         console.log(Tags)
     }
     
-    return <div >
-    <Topbar />
+    return <div className="bg-slate-50">
+    {topbar}
     
     <div className=" h-auto flex ">
         <div className="min-w-52 max-w-52">
-        <Index />
+        {index}
         </div>
         
         <div className="m-8 p-6">
         <div className="flex w-96 flex-col gap-6">
         <Textarea onChange={e=>{
             setTitle(e.target.value);
-        }} className="w-[32rem]" size="lg" label="Title" rows={3} />
+        }} className="w-[32rem]" size="lg" label="Question" rows={3} />
         <Textarea  onChange={e=>{
             setDescription(e.target.value);
-        }}  className="w-[40rem]" size="md" label="Description" rows={8} />
+        }}  className="w-[40rem]" size="md" label="Solution" rows={8} />
         <div>
         <input onChange={e=>{
             setTag(e.target.value)
         }} className="p-2" placeholder="tag"></input>
-        <button onClick={addTags} className="p-2">add tag</button>
+        <button onClick={addTags} className="p-2 bg-blue-900 rounded-lg text-white">add Tag</button>
         </div>
         <div className="w-32" ><Button onClick={()=>{
             

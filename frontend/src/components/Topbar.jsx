@@ -17,7 +17,7 @@ export const Topbar = () => {
        .then(response => {
            setUser(response.data.user)
        })
-   }, [])
+   }, [userId])
     
     return <div className="shadow bg-fuchsia-50 pl-10 pr-8 min-w-[82rem] h-14 flex justify-between">
         
@@ -29,7 +29,7 @@ export const Topbar = () => {
             <div className="text-rose-950 flex flex-col justify-center h-full mr-4">
                 {user}
             </div>
-            <div className="rounded-full h-12 w-12 bg-rose-100 flex justify-center  mt-1 mr-2">
+            <div className="rounded-full h-12 w-12 bg-rose-100 flex justify-center  mt-1 mr-2 hover:bg-blue-900">
                 <div className="flex flex-col justify-center h-full text-xl">
                     <button onClick={(e)=>{
                         e.persist();

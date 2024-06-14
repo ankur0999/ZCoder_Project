@@ -11,6 +11,7 @@ import { UsersQuestion } from "./pages/UsersQuestion";
 import { DiscussionPage } from "./pages/DiscussionPage";
 import { DiscussionBox } from "./pages/DiscussionBox";
 import { Users } from "./pages/Users";
+import { EditQuestion } from "./pages/EditQuestion";
 function App() {
   
 
@@ -30,6 +31,7 @@ function App() {
         <Route path = "/discussion" element={<DiscussionPage/>} />
         <Route path = "/discussionbox" element={<DiscussionBox/>}/>
         <Route path = "/searchusers" element={<Users />} />
+        <Route path = "/editquestion" element={<EditQuestion/>}/>
       </Routes>
       
       </BrowserRouter>

@@ -2,11 +2,11 @@ import { Textarea, Button, IconButton } from "@material-tailwind/react";
 import { useState } from "react"; 
 
 
-export function CommentBoxTextarea({onClick, onChange}) {
+export function CommentBoxTextarea({ onChange, desc}) {
     
   return (
     <div className="relative w-[42rem]">
-      <Textarea onChange={onChange} variant="static"  placeholder="Your Comment" rows={8}  />
+      <Textarea onChange={onChange} variant="static"  placeholder="Your Comment" rows={8} defaultValue={desc} />
       <div className="flex w-full justify-between py-1.5">
         <IconButton variant="text" color="blue-gray" size="sm">
           <svg
@@ -25,9 +25,7 @@ export function CommentBoxTextarea({onClick, onChange}) {
           </svg>
         </IconButton>
         <div className="flex gap-2">
-        <Button onClick = {onClick} size="sm" color="red" variant="text" className="rounded-md pl-4 pr-4">
-             Post 
-          </Button>
+        
         </div>
       </div>
     </div>

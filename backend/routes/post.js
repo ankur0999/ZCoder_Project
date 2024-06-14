@@ -45,8 +45,8 @@ router.get('/posts', async(req, res)=>{
 
 const feedBody = zod.object({
     title: zod.string(),
-    description: zod.string(),
-    Tags: zod.array(zod.string()),
+    description: zod.string().optional(),
+    Tags: zod.array(zod.string()).optional(),
     
     
 })
@@ -108,15 +108,14 @@ router.post("/comment/:postId", middleware.userAuthentication,  async(req, res)=
     
     const comment = await Comment.create({
         description: req.body.description,
-        firstName : user.firstName
+        firstName : user.firstName,
+        userId: req.userId
     })
     
     const postId = req.params.postId;
-    const post = await Post.findById({
-        _id: postId
-    })
+    
         await Post.updateOne({
-            _id: post._id,
+            _id: postId
         },{
             "$push":{
                 reply: comment._id
@@ -149,6 +148,24 @@ router.get("/comment/:postId", async(req, res)=>{
         })
     }catch(e){
         console.log(e)
+    }
+})
+
+//route for update comment
+router.put("/comment/update/:commentId", middleware.userAuthentication, async(req, res)=>{
+    const { success } = commentBody.safeParse(req.body)
+    if(!success){
+        res.status(411).json({
+            msg: " unable to parse body"
+        })
+    }
+    const commentId = req.params.commentId;
+    try{
+    await Comment.updateOne({ _id: commentId},req.body)
+    res.json({
+        msg: "comment update successful"
+    })}catch(e){
+        console.log(e);
     }
 })
 
