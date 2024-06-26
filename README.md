@@ -1,3 +1,5 @@
+// run 'node index.js' on backend  and 'npm run dev' on frontend terminal -> it will give you local link of running project
+
 1. Users Can Authenticate Using Signup or Signin
 2. After Authentication user will reach dashboard(home)
 3. where on left side of dashboard navbar is given in which only those function are working which changes color when we hover over it. rest are left for future purposes.
