@@ -66,14 +66,17 @@ router.post("/signin", async (req, res)=>{
         username: req.body.username,
         
     });
-    const comparePassword = await bcrypt.compare(req.body.password, user.password);
+    if(user){
+        const comparePassword = await bcrypt.compare(req.body.password, user.password);
     if(!comparePassword){
         return res.status(400).json({
             msg: "Incorrect Password"
         })
     }
+    
+    
 
-    if(user){
+    
         const token = jwt.sign({
             userId: user._id
         }, JWT_SECRET);
@@ -83,7 +86,7 @@ router.post("/signin", async (req, res)=>{
             token: token
         })
         return;
-    } 
+    }
     res.status(411).json({
         message: "Error while logging in"
     })
@@ -109,6 +112,7 @@ const updateUser = zod.object({
 
 router.put('/update', middleware.userAuthentication, async(req, res)=>{
     const { success } = updateUser.safeParse(req.body);
+    const userId = req.userId;
     if(!success){
         res.status(411).json({
             message: "Error while updating information"
@@ -120,7 +124,7 @@ router.put('/update', middleware.userAuthentication, async(req, res)=>{
         req.body.password = await bcrypt.hash(req.body.password, salt);
     }
     
-    await User.updateOne({_id : req.userId}, req.body);
+    await User.updateOne({_id : userId}, req.body);
 
     res.json({
         message: "Updated successfully"
@@ -179,6 +183,7 @@ const discussionBody = zod.object({
 
 router.post("/discussion", middleware.userAuthentication, async(req, res)=>{
     const { success } = discussionBody.safeParse(req.body);
+    const userId = req.userId;
     if(!success){
         return res.status(411).json({
             message: "incorrect input"
@@ -194,11 +199,11 @@ router.post("/discussion", middleware.userAuthentication, async(req, res)=>{
          },{
             "$push":
             {
-                users: req.userId
+                users: userId
             }
          })
          await User.updateOne({
-            _id: req.userId
+            _id: userId
          },{
             "$push":{
                 discussion: discussion._id
@@ -247,17 +252,19 @@ router.get("/getusers/discussion/:discussionId", async(req,res)=>{
         const discussion = await Discussion.findById({
             _id: discussionId
         })
-        const users = await User.find({
-            _id:{
-                "$in": discussion.users
-            }
-        })
-        
-            res.json({
-                user: users
+        if(discussion){
+            const users = await User.find({
+                _id:{
+                    "$in": discussion.users
+                }
             })
+            
+                res.json({
+                    user: users
+                })
+        }
         
-        
+            
     }catch(e){
         console.log(e);
     }
@@ -266,9 +273,10 @@ router.get("/getusers/discussion/:discussionId", async(req,res)=>{
 // route to get all users current  discussion
 
 router.get("/discussions", middleware.userAuthentication, async(req,res)=>{
+    const userId = req.userId;
     try{
     const user = await User.findById({
-        _id: req.userId
+        _id: userId
     })
 
     const discussion = await Discussion.find({
@@ -311,6 +319,7 @@ const commentBody = zod.object({
     description: zod.string()
 });
 router.post("/comment/:discussionId", middleware.userAuthentication, async(req,res)=>{
+    const userId = req.userId;
     const {success} = commentBody.safeParse(req.body)
     if(!success){
         return res.status(411).json({
@@ -320,12 +329,12 @@ router.post("/comment/:discussionId", middleware.userAuthentication, async(req,r
     
     try{
     const user = await User.findById({
-        _id: req.userId
+        _id: userId
     })
     const comment = await Comment.create({
         description: req.body.description,
         firstName: user.firstName,
-        userId: req.userId
+        userId: userId
     })
     const discussionId = req.params.discussionId;
     await Discussion.updateOne({
@@ -349,10 +358,11 @@ router.post("/comment/:discussionId", middleware.userAuthentication, async(req,r
 
 router.put("/delete/discussion/:discussionId", middleware.userAuthentication, async(req, res)=>{
     const discussionId = req.params.discussionId;
+    const userId = req.userId;
     try{
     
     await User.updateOne({
-        _id: req.userId
+        _id: userId
     },{
         "$pull":{
             discussion: discussionId
@@ -361,11 +371,12 @@ router.put("/delete/discussion/:discussionId", middleware.userAuthentication, as
     const discussion = await Discussion.findById({
         _id: discussionId
     })
+
     await Discussion.updateOne({
         _id: discussionId
     },{
         "$pull":{
-            users: req.userId
+            users: userId
         }
     })
     
@@ -373,18 +384,17 @@ router.put("/delete/discussion/:discussionId", middleware.userAuthentication, as
         await Discussion.deleteOne({
             _id: discussionId
         })
+
     }
-    else{
-        res.json("unable to delete")
-    }
+    res.json({
+        msg: "pulled successfully"
+    })
     
 
 }catch(e){
         console.log(e);
     }
-    res.json({
-        msg: "pulled successfully"
-    })
+    
 })
 
 
